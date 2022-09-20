@@ -5,9 +5,11 @@ import { BookModule } from './book/book.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from './book/book.entity';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [AuthModule,
+    ConfigModule.forRoot(),
     BookModule,
     TypeOrmModule.forRoot({
       type: 'postgres',

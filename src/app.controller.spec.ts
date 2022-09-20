@@ -1,22 +1,27 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
+import { Types, disconnect } from 'mongoose';
 
-describe('AppController', () => {
-  let appController: AppController;
+const productId = new Types.ObjectId().toHexString();
 
-  beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
+describe('AppController (e2e)', () => {
+  let app: INestApplication;
+  let createdId: string;
+  let token: string;
 
-    appController = app.get<AppController>(AppController);
+  it('/findone (POST) - success', (done) => {
+    request(app.getHttpServer())
+      .post('/findone')
+      .send("1")
+      .expect(201)
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
-    });
+  it('/findall(GET) - success', (done) => {
+    request(app.getHttpServer())
+      .get('/findall')
+      .expect(201)
   });
+});
+afterAll(() => {
+  disconnect();
 });
