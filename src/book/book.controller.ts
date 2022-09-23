@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from 'src/auth/guards/jwt.guards';
+import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
 import { BookDto } from './dook.dto';

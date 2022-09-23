@@ -6,11 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Book } from './book/book.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PublisherModule } from './publisher/publisher.module';
+import { Publisher } from './publisher/publisher.entity';
 
 @Module({
   imports: [AuthModule,
     ConfigModule.forRoot(),
     BookModule,
+    PublisherModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'experiment-postgresql-ams3-58753-do-user-6617293-0.b.db.ondigitalocean.com',
@@ -18,7 +21,7 @@ import { ConfigModule } from '@nestjs/config';
       username: 'doadmin',
       password: 'AVNS_yEo-qnPlj0zv2L5FLJg',
       database: 'defaultdb',
-      entities: [Book],
+      entities: [Book, Publisher],
       synchronize: false,
       ssl: { rejectUnauthorized: false }
     })],
