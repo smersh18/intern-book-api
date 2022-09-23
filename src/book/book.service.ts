@@ -21,4 +21,8 @@ export class BookService {
 	async remove(bookId: number): Promise<void> {
 		await this.booksRepository.delete(bookId);
 	}
-}
+
+	create( title: string, isbn: string): Book {
+		return this.booksRepository.create({ title: title, isbn: isbn });
+	}
+} 

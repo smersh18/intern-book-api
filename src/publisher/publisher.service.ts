@@ -17,4 +17,12 @@ export class PublisherService {
 	async findOne(id: number): Promise<Publisher> {
 		return this.publishersRepository.findOneBy({ publisher_id: id });
 	}
+
+	async remove(publisherId: number): Promise<void> {
+		await this.publishersRepository.delete(publisherId);
+	}
+
+	create(publisher_id: number, org_name: string, address: string): Publisher {
+		return this.publishersRepository.create({ publisher_id: publisher_id, org_name: org_name, address: address });
+	}
 }

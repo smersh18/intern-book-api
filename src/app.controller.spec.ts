@@ -3,6 +3,9 @@ import * as request from 'supertest';
 import { Types, disconnect } from 'mongoose';
 import { AppModule } from './app.module';
 import { Test, TestingModule } from '@nestjs/testing';
+import { BookService } from './book/book.service';
+import { PublisherService } from './publisher/publisher.service';
+import { response } from 'express';
 
 const productId = new Types.ObjectId().toHexString();
 
@@ -10,6 +13,8 @@ describe('AppController (e2e)', () => {
   let app: INestApplication;
   let createdId: string;
   let token: string;
+  let booksService: BookService;
+  let publishersService: PublisherService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -26,6 +31,9 @@ describe('AppController (e2e)', () => {
         "password": "123456"
       });
     token = body.access_token;
+
+    booksService = moduleFixture.get<BookService>(BookService);
+    publishersService = moduleFixture.get<PublisherService>(PublisherService);
   });
 
   it('/auth/login (POST) - success', (done) => {
@@ -42,39 +50,20 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('/findall(GET) - success', (done) => {
-    request(app.getHttpServer())
+  it('/findall(GET) - success', async (done) => {
+    let resp1 = await (request(app.getHttpServer())
       .get('/findall')
       .set('Authorization', 'Bearer ' + token)
-      .expect(200)
-      .then(({ body }: request.Response) => {
-        expect(body).toEqual([{
-          "book_id": 1,
-          "title": "The Diary of a young girl",
-          "isbn": "123456"
-        },
-        {
-          "book_id": 2,
-          "title": "The Diary of a bad girl",
-          "isbn": "234567"
-        },
-        {
-          "book_id": 3,
-          "title": "The Diary of a sad girl",
-          "isbn": "345678"
-        },
-        {
-          "book_id": 4,
-          "title": "The Diary of a tall girl",
-          "isbn": "456789"
-        },
-        {
-          "book_id": 5,
-          "title": "The Diary of a stupid girl",
-          "isbn": "567890"
-        }]);
-        done();
-      });
+      .expect(200))
+    let a = resp1.body.length
+    booksService.create("nazvanie", "192783")
+    let resp2 = await (request(app.getHttpServer())
+      .get('/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
+    let b = resp2.body.length
+    expect(b).toEqual(a + 1);
+    done();
   });
 
   it('/findone (POST) - success', (done) => {
