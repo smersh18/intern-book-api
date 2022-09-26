@@ -50,7 +50,7 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('/findall(GET) - success', async (done) => {
+  it('/findall(GET) - success', async () => {
     let resp1 = await (request(app.getHttpServer())
       .get('/findall')
       .set('Authorization', 'Bearer ' + token)
@@ -63,76 +63,86 @@ describe('AppController (e2e)', () => {
       .expect(200))
     let b = resp2.body.length
     expect(b).toEqual(a + 1);
-    done();
   });
 
-  it('/findone (POST) - success', (done) => {
-    request(app.getHttpServer())
+  it('/findone (POST) - success', async () => {
+    let resp1 = await (request(app.getHttpServer())
+      .get('/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
+    let a = resp1.body
+    booksService.create("nazvanie", "192783")
+    let resp4 = await (request(app.getHttpServer())
+      .get('/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
+    let d = resp4.body
+    let resp2 = await (request(app.getHttpServer())
       .post('/findone')
       .set('Authorization', 'Bearer ' + token)
       .send({
-        "book_id": 4
+        "book_id": a.length
       })
-      .expect(201)
-      .then(({ body }: request.Response) => {
-        expect(body).toEqual({
-          "book_id": 1,
-          "title": "The Diary of a young girl",
-          "isbn": "123456"
-        });
-        done();
-      });
-  });
-
-  it('/publisher/findall(GET) - success', (done) => {
-    request(app.getHttpServer())
-      .get('/publisher/findall')
-      .set('Authorization', 'Bearer ' + token)
-      .expect(200)
-      .then(({ body }: request.Response) => {
-        expect(body).toEqual([
-          {
-            "publisher_id": 1,
-            "org_name": "oxford",
-            "address": "NY"
-          },
-          {
-            "publisher_id": 2,
-            "org_name": "garvard",
-            "address": "EN"
-          },
-          {
-            "publisher_id": 3,
-            "org_name": "kgy",
-            "address": "RU"
-          },
-          {
-            "publisher_id": 4,
-            "org_name": "pty",
-            "address": "KZ"
-          }
-        ]);
-        done();
-      });
-  });
-
-  it('/publisher/findone (POST) - success', (done) => {
-    request(app.getHttpServer())
-      .post('/publisher/findone')
+      .expect(201))
+    let b = resp2.body
+    let resp3 = await (request(app.getHttpServer())
+      .post('/findone')
       .set('Authorization', 'Bearer ' + token)
       .send({
-        "publisher_id": 4
+        "book_id": d.length
       })
-      .expect(201)
-      .then(({ body }: request.Response) => {
-        expect(body).toEqual({
-          "publisher_id": 1,
-          "org_name": "oxford",
-          "address": "NY"
-        });
-        done();
-      });
+      .expect(201))
+    let c = resp3.body
+    expect(b).toEqual(c);
   });
+
+  it('/publisher/findall(GET) - success', async () => {
+    let resp1 = await (request(app.getHttpServer())
+      .get('/publisher/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
+    let a = resp1.body.length
+    publishersService.create("nazvanie", "192783")
+    let resp2 = await (request(app.getHttpServer())
+      .get('/publisher/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
+    let b = resp2.body.length
+    expect(b).toEqual(a + 1);
+
+  });
+
+  it('/publisher/findone (POST) - success', async(done) => {
+    let resp1 = await (request(app.getHttpServer())
+        .get('/publisher/findall')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200))
+    let a = resp1.body
+    publishersService.create("nazvanie", "192783")
+    let resp4 = await (request(app.getHttpServer())
+        .get('/publisher/findall')
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200))
+    let d = resp4.body
+    let resp2 = await (request(app.getHttpServer())
+        .post('/publisher/findone')
+        .set('Authorization', 'Bearer ' + token)
+        .send({
+          "publisher_id": a.length
+        })
+        .expect(201))
+    let b = resp2.body
+    let resp3 = await (request(app.getHttpServer())
+        .post('/publisher/findone')
+        .set('Authorization', 'Bearer ' + token)
+        .send({
+          "publisher_id": d.length
+        })
+        .expect(201))
+    let c = resp3.body
+    expect(b).toEqual(c);
+  });
+
 });
 afterAll(() => {
   disconnect();
