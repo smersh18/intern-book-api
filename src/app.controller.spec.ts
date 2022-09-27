@@ -56,7 +56,7 @@ describe('AppController (e2e)', () => {
       .set('Authorization', 'Bearer ' + token)
       .expect(200))
     let a = resp1.body.length
-    booksService.create("nazvanie", "192783")
+    await booksService.create("nazvanie", "192783")
     let resp2 = await (request(app.getHttpServer())
       .get('/findall')
       .set('Authorization', 'Bearer ' + token)
@@ -66,12 +66,13 @@ describe('AppController (e2e)', () => {
   });
 
   it('/findone (POST) - success', async () => {
+    jest.setTimeout(10000)
     let resp1 = await (request(app.getHttpServer())
       .get('/findall')
       .set('Authorization', 'Bearer ' + token)
       .expect(200))
     let a = resp1.body
-    booksService.create("nazvanie", "192783")
+    await booksService.create("nazvanie", "192783")
     let resp4 = await (request(app.getHttpServer())
       .get('/findall')
       .set('Authorization', 'Bearer ' + token)
@@ -112,33 +113,33 @@ describe('AppController (e2e)', () => {
 
   });
 
-  it('/publisher/findone (POST) - success', async(done) => {
+  it('/publisher/findone (POST) - success', async () => {
     let resp1 = await (request(app.getHttpServer())
-        .get('/publisher/findall')
-        .set('Authorization', 'Bearer ' + token)
-        .expect(200))
+      .get('/publisher/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
     let a = resp1.body
     publishersService.create("nazvanie", "192783")
     let resp4 = await (request(app.getHttpServer())
-        .get('/publisher/findall')
-        .set('Authorization', 'Bearer ' + token)
-        .expect(200))
+      .get('/publisher/findall')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200))
     let d = resp4.body
     let resp2 = await (request(app.getHttpServer())
-        .post('/publisher/findone')
-        .set('Authorization', 'Bearer ' + token)
-        .send({
-          "publisher_id": a.length
-        })
-        .expect(201))
+      .post('/publisher/findone')
+      .set('Authorization', 'Bearer ' + token)
+      .send({
+        "publisher_id": a.length
+      })
+      .expect(201))
     let b = resp2.body
     let resp3 = await (request(app.getHttpServer())
-        .post('/publisher/findone')
-        .set('Authorization', 'Bearer ' + token)
-        .send({
-          "publisher_id": d.length
-        })
-        .expect(201))
+      .post('/publisher/findone')
+      .set('Authorization', 'Bearer ' + token)
+      .send({
+        "publisher_id": d.length
+      })
+      .expect(201))
     let c = resp3.body
     expect(b).toEqual(c);
   });

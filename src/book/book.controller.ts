@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common'
+import { post } from '@typegoose/typegoose';
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
@@ -23,5 +24,12 @@ export class BookController {
 	@Delete('remove')
 	async remove(@Body() dto: BookDto): Promise<void> {
 		const book = await this.bookService.remove(dto.bookId);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@Post('create')
+	 async create(title: string, isbn: string): Promise<Book> {
+		const book = this.bookService.create(title, isbn);
+		return book
 	}
 }

@@ -22,7 +22,7 @@ export class PublisherService {
 		await this.publishersRepository.delete(publisherId);
 	}
 
-	create( org_name: string, address: string): Publisher {
-		return this.publishersRepository.create({ org_name: org_name, address: address });
+	async create( org_name: string, address: string): Promise<Publisher> {
+		return this.publishersRepository.save({ org_name: org_name, address: address });
 	}
 }

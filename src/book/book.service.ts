@@ -22,7 +22,7 @@ export class BookService {
 		await this.booksRepository.delete(bookId);
 	}
 
-	create( title: string, isbn: string): Book {
-		return this.booksRepository.create({ title: title, isbn: isbn });
+	async create(title: string, isbn: string): Promise<Book> {
+		return this.booksRepository.save({ title: title, isbn: isbn });
 	}
-} 
+}
