@@ -59,7 +59,7 @@ describe("AppController (e2e)", () => {
   it("/books/findall(GET) - success", async () => {
     // Given: load all books
     const prevResponse = await (request(app.getHttpServer())
-      .get("/findall")
+      .get("/books/findall")
       .set("Authorization", "Bearer " + token)
       .expect(200));
     const prevCount = prevResponse.body.length;
@@ -71,7 +71,7 @@ describe("AppController (e2e)", () => {
 
     // When: load all books after new has been created
     const afterResponse = await (request(app.getHttpServer())
-      .get("/findall")
+      .get("/books/findall")
       .set("Authorization", "Bearer " + token)
       .expect(200));
 
@@ -86,13 +86,13 @@ describe("AppController (e2e)", () => {
   it("/findone (POST) - success", async () => {
     jest.setTimeout(10000);
     let resp1 = await (request(app.getHttpServer())
-      .get("/findall")
+      .get("/books/findall")
       .set("Authorization", "Bearer " + token)
       .expect(200));
     let a = resp1.body;
     await booksService.create("nazvanie", "192783");
     let resp4 = await (request(app.getHttpServer())
-      .get("/findall")
+      .get("/books/findall")
       .set("Authorization", "Bearer " + token)
       .expect(200));
     let d = resp4.body;

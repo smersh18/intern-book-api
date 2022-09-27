@@ -5,7 +5,7 @@ import { Book } from './book.entity';
 import { BookService } from './book.service'
 import { BookDto } from './dook.dto';
 
-@Controller()
+@Controller('books')
 export class BookController {
 	constructor(private readonly bookService: BookService) { }
 	@UseGuards(JwtAuthGuard)
