@@ -2,9 +2,9 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { Types, disconnect } from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-import {AppModule} from "../src/app.module";
-import {PublisherService} from "../src/publisher/publisher.service";
-import {BookService} from "../src/book/book.service";
+import {AppModule} from "../app.module";
+import {PublisherService} from "../publisher/publisher.service";
+import {BookService} from "../book/book.service";
 
 describe("AppController (e2e)", () => {
     let app: INestApplication;
@@ -37,7 +37,9 @@ describe("AppController (e2e)", () => {
             .set("Authorization", "Bearer " + token)
             .expect(200));
         let a = resp1.body.length;
-        publishersService.create("nazvanie", "192783");
+        const org_name = Math.random().toString(36).slice(2)
+        const address = Math.random().toString(11)
+        const createdPublisher = await publishersService.create(org_name, address);
         let resp2 = await (request(app.getHttpServer())
             .get("/publisher/findall")
             .set("Authorization", "Bearer " + token)

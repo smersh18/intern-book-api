@@ -2,8 +2,8 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { disconnect } from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-import {BookService} from "../src/book/book.service";
-import {AppModule} from "../src/app.module";
+import {BookService} from "../book/book.service";
+import {AppModule} from "../app.module";
 
 describe("AppController (e2e)", () => {
     let app: INestApplication;
@@ -56,7 +56,7 @@ describe("AppController (e2e)", () => {
         // expect(createdBook).toEqual(afterResponse.body[afterResponse.body.length - 1]);
     });
 
-    it("/findone (POST) - success", async () => {
+    it("/books/findone (POST) - success", async () => {
         jest.setTimeout(10000);
         // Given: load all books
         let prevResponseFindall = await (request(app.getHttpServer())
@@ -68,32 +68,17 @@ describe("AppController (e2e)", () => {
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
         const createdPublisher = await booksService.create(title, isbn);
-        // When: load all books after new has been created
-        let afterResponseFindall = await (request(app.getHttpServer())
-            .get("/books/findall")
-            .set("Authorization", "Bearer " + token)
-            .expect(200));
-        let afterCountFindall = afterResponseFindall.body;
-        // Then: load one book before create
-        let prevResponseFindone = await (request(app.getHttpServer())
-            .post("/findone")
-            .set("Authorization", "Bearer " + token)
-            .send({
-                "book_id": prevCountFindall.length
-            })
-            .expect(201));
-        let prevCountFindne = prevResponseFindone.body;
         //Then: load one book after create
         let afterResponseFindone = await (request(app.getHttpServer())
-            .post("/findone")
+            .post("/books/findone")
             .set("Authorization", "Bearer " + token)
             .send({
-                "book_id": afterCountFindall.length
+                "book_id": prevCountFindall.length - 1
             })
             .expect(201));
         let afterCountFindone = afterResponseFindone.body;
         // Then: check count
-        expect(prevCountFindne).toEqual(afterCountFindone);
+        expect(afterCountFindone).toBeDefined();
     });
 });
 afterAll(() => {
