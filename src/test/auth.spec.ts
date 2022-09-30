@@ -17,6 +17,7 @@ describe("AppController (e2e)", () => {
     });
 
     it("/auth/login (POST) - success", (done) => {
+        // login
         request(app.getHttpServer())
             .post("/auth/login")
             .send({
@@ -25,6 +26,7 @@ describe("AppController (e2e)", () => {
             })
             .expect(200)
             .then(({ body }: request.Response) => {
+                //check token
                 expect(body.access_token).toBeDefined();
                 done();
             });

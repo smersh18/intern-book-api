@@ -2,8 +2,8 @@ import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { disconnect } from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
-import {BookService} from "../book/book.service";
-import {AppModule} from "../app.module";
+import { BookService } from "../book/book.service";
+import { AppModule } from "../app.module";
 
 describe("AppController (e2e)", () => {
     let app: INestApplication;
@@ -63,17 +63,17 @@ describe("AppController (e2e)", () => {
             .get("/books/findall")
             .set("Authorization", "Bearer " + token)
             .expect(200));
-        let prevCountFindall = prevResponseFindall.body;
+        let prevCountFindall = prevResponseFindall.body[prevResponseFindall.body.length].book_id;
         // When: create new book
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
-        const createdPublisher = await booksService.create(title, isbn);
+        const createdBook = await booksService.create(title, isbn);
         //Then: load one book after create
         let afterResponseFindone = await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + token)
             .send({
-                "book_id": prevCountFindall.length - 1
+                "book_id": createdBook.book_id
             })
             .expect(201));
         let afterCountFindone = afterResponseFindone.body;
