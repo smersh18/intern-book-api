@@ -58,12 +58,6 @@ describe("AppController (e2e)", () => {
 
     it("/books/findone (POST) - success", async () => {
         jest.setTimeout(10000);
-        // Given: load all books
-        let prevResponseFindall = await (request(app.getHttpServer())
-            .get("/books/findall")
-            .set("Authorization", "Bearer " + token)
-            .expect(200));
-        let prevCountFindall = prevResponseFindall.body[prevResponseFindall.body.length].book_id;
         // When: create new book
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
@@ -79,6 +73,26 @@ describe("AppController (e2e)", () => {
         let afterCountFindone = afterResponseFindone.body;
         // Then: check count
         expect(afterCountFindone).toBeDefined();
+    });
+
+    it("/books/findall(GET) - fail", async () => {
+        // Given: load all books
+        const prevResponse = await (request(app.getHttpServer())
+            .get("/books/findall")
+            .set("Authorization", "Bearer " + 123)
+            .expect(401));
+        const prevCount = prevResponse.body.length;
+
+        // When: create new book
+        const title = Math.random().toString(36).slice(2)
+        const isbn = Math.random().toString(11)
+        const createdBook = await booksService.create(title, isbn);
+
+        // When: load all books after new has been created
+        const afterResponse = await (request(app.getHttpServer())
+            .get("/books/findall")
+            .set("Authorization", "Bearer " + 123)
+            .expect(401));
     });
 });
 afterAll(() => {

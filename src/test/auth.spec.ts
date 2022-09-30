@@ -31,6 +31,19 @@ describe("AppController (e2e)", () => {
                 done();
             });
     });
+
+    it('/auth/login (POST) - fail login', () => {
+        request(app.getHttpServer())
+            .post('/auth/login')
+            .send({  "login": "dima@gmail.com",
+                "password": "12345678" })
+            .expect(401, {
+                statusCode: 401,
+                error: "Unauthorized"
+            });
+
+    });
+
 });
 afterAll(() => {
     disconnect();

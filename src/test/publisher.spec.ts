@@ -55,12 +55,6 @@ describe("AppController (e2e)", () => {
 
     it("/publisher/findone (POST) - success", async () => {
         jest.setTimeout(10000);
-        // Given: load all publishers
-        let prevResponseFindall = await (request(app.getHttpServer())
-            .get("/publisher/findall")
-            .set("Authorization", "Bearer " + token)
-            .expect(200));
-        let prevCountFindall = prevResponseFindall.body[prevResponseFindall.body.length].book_id;
         // When: create new publisher
         const org_name = Math.random().toString(36).slice(2)
         const address = Math.random().toString(11)
