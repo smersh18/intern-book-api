@@ -72,6 +72,49 @@ describe("AppController (e2e)", () => {
         expect(afterCountFindone).toBeDefined();
     });
 
+    it("/publisher/findall(GET) - fail", async () => {
+        // load all publishers
+        let prevResponse = await (request(app.getHttpServer())
+            .get("/publisher/findall")
+            .set("Authorization", "Bearer " + 123)
+            .expect(401));
+    });
+
+    it("/publisher/findone (POST) - fail", async () => {
+        jest.setTimeout(10000);
+        // When: create new publisher
+        const org_name = Math.random().toString(36).slice(2)
+        const address = Math.random().toString(11)
+        const createdPublisher = await publishersService.create(org_name, address);
+        //Then: load one publisher after create
+        let afterResponseFindone = await (request(app.getHttpServer())
+            .post("/publisher/findone")
+            .set("Authorization", "Bearer " + 123)
+            .send({
+                "book_id": createdPublisher.publisher_id
+            })
+            .expect(401));
+    });
+
+    it("/publisher/findone (POST) - fail", async () => {
+        jest.setTimeout(10000);
+        // When: create new publisher
+        const org_name = Math.random().toString(36).slice(2)
+        const address = Math.random().toString(11)
+        const createdPublisher = await publishersService.create(org_name, address);
+        //Then: load one publisher after create
+        let afterResponseFindone = await (request(app.getHttpServer())
+            .post("/publisher/findone")
+            .set("Authorization", "Bearer " + token)
+            .send({
+                "book_id": createdPublisher.publisher_id
+            })
+            .expect(201));
+        let afterCountFindone = undefined
+        // Then: check count
+        expect(afterCountFindone).toBeUndefined();
+    });
+
 });
 afterAll(() => {
     disconnect();

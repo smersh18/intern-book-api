@@ -3,6 +3,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { PublisherDto } from './publisher.dto';
 import { Publisher } from './publisher.entity';
 import { PublisherService } from './publisher.service';
+import {BookDto} from "../book/dook.dto";
 
 
 @Controller('publisher')
@@ -19,5 +20,10 @@ export class PublisherController {
 	async findall(): Promise<Publisher[]> {
 		const publisher = await this.publisherService.findAll();
 		return publisher
+	}
+	@Delete('remove')
+	async remove(@Body() dto: PublisherDto): Promise<void> {
+		const book = await this.publisherService.remove(dto.publisherId);
+		return book
 	}
 }

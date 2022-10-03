@@ -24,6 +24,7 @@ export class BookController {
 	@Delete('remove')
 	async remove(@Body() dto: BookDto): Promise<void> {
 		const book = await this.bookService.remove(dto.bookId);
+		return book
 	}
 
 	@UseGuards(JwtAuthGuard)
