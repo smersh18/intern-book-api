@@ -145,7 +145,8 @@ describe("AppController (e2e)", () => {
             .send({
                 "book_id": createdBook.book_id
             })
-            .expect(404));
+            .expect(201));
+        expect(afterResponse.body).toEqual({});
     });
 
 });

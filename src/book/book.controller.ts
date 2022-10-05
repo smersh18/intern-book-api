@@ -11,7 +11,7 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@Post('findone')
 	async findone(@Body() dto: BookDto): Promise<Book> {
-		const book = await this.bookService.findOne(dto.bookId);
+		const book = await this.bookService.findOne(dto.book_id);
 		return book
 	}
 	@UseGuards(JwtAuthGuard)
