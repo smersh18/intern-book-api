@@ -62,6 +62,7 @@ describe("AppController (e2e)", () => {
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
         const createdBook = await booksService.create(title, isbn);
+
         //Then: load one book after create
         let afterResponseFindone = await (request(app.getHttpServer())
             .post("/books/findone")
@@ -72,7 +73,7 @@ describe("AppController (e2e)", () => {
             .expect(201));
         let afterCountFindone = afterResponseFindone.body;
         // Then: check count
-        expect(afterCountFindone).toBeDefined();
+        expect(afterCountFindone).toEqual(createdBook);
     });
 
     it("/books/findall(GET) - fail", async () => {
@@ -119,26 +120,32 @@ describe("AppController (e2e)", () => {
     });
 
     it('/books/:id (DELETE) - success', async () => {
+        jest.setTimeout(10000);
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn);
+        const createdBook = await booksService.create(title, isbn)
+
         const prevResponse = await (request(app.getHttpServer())
-            .get("/books/findall")
+            .post("/books/findone")
             .set("Authorization", "Bearer " + token)
-            .expect(200));
-        const prevCount = prevResponse.body.length;
+            .send({
+                "book_id": createdBook.book_id
+            })
+            .expect(201));
+        const prevCount = prevResponse.body;
+
         let deleted = await (request(app.getHttpServer())
             .delete('/books/' + createdBook.book_id)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
-        const afterResponse = await (request(app.getHttpServer())
-            .get("/books/findall")
-            .set("Authorization", "Bearer " + token)
-            .expect(200));
 
-        // Then: check count
-        const afterCount = afterResponse.body.length;
-        expect(afterCount).toEqual(prevCount - 1);
+        const afterResponse = await (request(app.getHttpServer())
+            .post("/books/findone")
+            .set("Authorization", "Bearer " + token)
+            .send({
+                "book_id": createdBook.book_id
+            })
+            .expect(404));
     });
 
 });
