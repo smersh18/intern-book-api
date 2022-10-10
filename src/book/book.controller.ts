@@ -38,13 +38,18 @@ export class BookController {
 		const book = await this.bookService.findAll();
 		return book
 	}
+
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Delete(':id')
-	async remove(@Param('id') dto: number) {
-		const book = await this.bookService.remove(dto);
+	async remove(@Param('id') dto: number, ) {
+		if (this.bookService.findOne(dto)){
+			const book = await this.bookService.remove(dto);
 		}
-
+		else{
+			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
+		}
+		}
 
 	@UseGuards(JwtAuthGuard)
 	@Post('create')

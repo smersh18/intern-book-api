@@ -130,7 +130,7 @@ describe("AppController (e2e)", () => {
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
 
-        const afterResponse = await (request(app.getHttpServer())
+       await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + token)
             .send({
