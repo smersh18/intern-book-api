@@ -1,6 +1,6 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { disconnect } from "mongoose";
+import {disconnect, Types} from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import { BookService } from "../book/book.service";
 import { AppModule } from "../app.module";
@@ -40,7 +40,7 @@ describe("AppController (e2e)", () => {
         // When: create new book
         const title = Math.random().toString(36).slice(2)
         const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn);
+        await booksService.create(title, isbn);
 
         // When: load all books after new has been created
         const afterResponse = await (request(app.getHttpServer())
@@ -78,7 +78,7 @@ describe("AppController (e2e)", () => {
 
     it("/books/findall(GET) - fail", async () => {
         // Given: load all books
-        const prevResponse = await (request(app.getHttpServer())
+        await (request(app.getHttpServer())
             .get("/books/findall")
             .set("Authorization", "Bearer " + 123)
             .expect(401));
@@ -91,7 +91,7 @@ describe("AppController (e2e)", () => {
         const isbn = Math.random().toString(11)
         const createdBook = await booksService.create(title, isbn);
         //Then: load one book after create
-        let afterResponseFindone = await (request(app.getHttpServer())
+        await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + 123)
             .send({
@@ -107,7 +107,7 @@ describe("AppController (e2e)", () => {
         const isbn = Math.random().toString(11)
         const createdBook = await booksService.create(title, isbn);
         //Then: load one book after create
-        let afterResponseFindone = await (request(app.getHttpServer())
+       await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + token)
             .send({
@@ -125,16 +125,7 @@ describe("AppController (e2e)", () => {
         const isbn = Math.random().toString(11)
         const createdBook = await booksService.create(title, isbn)
 
-        const prevResponse = await (request(app.getHttpServer())
-            .post("/books/findone")
-            .set("Authorization", "Bearer " + token)
-            .send({
-                "book_id": createdBook.book_id
-            })
-            .expect(201));
-        const prevCount = prevResponse.body;
-
-        let deleted = await (request(app.getHttpServer())
+        await (request(app.getHttpServer())
             .delete('/books/' + createdBook.book_id)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
@@ -145,8 +136,17 @@ describe("AppController (e2e)", () => {
             .send({
                 "book_id": createdBook.book_id
             })
-            .expect(201));
-        expect(afterResponse.body).toEqual({});
+            .expect(404));
+    });
+
+    it('/books/:id (DELETE) - fail', () => {
+        request(app.getHttpServer())
+            .delete('/books/' + new Types.ObjectId().toHexString())
+            .set('Authorization', 'Bearer ' + token)
+            .expect(404, {
+                statusCode: 404,
+                message: "Книга не найдена"
+            });
     });
 
 });

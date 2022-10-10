@@ -1,9 +1,21 @@
-import {Body, Controller, Delete, Get, Param, Post, UseGuards} from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	HttpCode,
+	HttpException,
+	HttpStatus,
+	Param,
+	Post,
+	UseGuards
+} from '@nestjs/common'
 import { post } from '@typegoose/typegoose';
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
 import { BookDto } from './dook.dto';
+
 
 @Controller('books')
 export class BookController {
@@ -12,7 +24,13 @@ export class BookController {
 	@Post('findone')
 	async findone(@Body() dto: BookDto): Promise<Book> {
 		const book = await this.bookService.findOne(dto.book_id);
-		return book
+		if(!book){
+			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
+		}
+		else{
+			return book
+		}
+
 	}
 	@UseGuards(JwtAuthGuard)
 	@Get('findall')
@@ -21,11 +39,12 @@ export class BookController {
 		return book
 	}
 	@UseGuards(JwtAuthGuard)
+	@HttpCode(200)
 	@Delete(':id')
-	async remove(@Param('id') dto: number): Promise<void> {
+	async remove(@Param('id') dto: number) {
 		const book = await this.bookService.remove(dto);
-		return book
-	}
+		}
+
 
 	@UseGuards(JwtAuthGuard)
 	@Post('create')

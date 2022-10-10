@@ -8,9 +8,7 @@ import {BookService} from "../book/book.service";
 
 describe("AppController (e2e)", () => {
     let app: INestApplication;
-    let createdId: string;
     let token: string;
-    let booksService: BookService;
     let publishersService: PublisherService;
 
     beforeEach(async () => {
@@ -41,7 +39,7 @@ describe("AppController (e2e)", () => {
         // create new publisher
         const org_name = Math.random().toString(36).slice(2)
         const address = Math.random().toString(11)
-        const createdPublisher = await publishersService.create(org_name, address);
+     await publishersService.create(org_name, address);
         // load all publishers after new has been created
         let afterResponse = await (request(app.getHttpServer())
             .get("/publisher/findall")
@@ -74,7 +72,7 @@ describe("AppController (e2e)", () => {
 
     it("/publisher/findall(GET) - fail", async () => {
         // load all publishers
-        let prevResponse = await (request(app.getHttpServer())
+        await (request(app.getHttpServer())
             .get("/publisher/findall")
             .set("Authorization", "Bearer " + 123)
             .expect(401));
@@ -87,7 +85,7 @@ describe("AppController (e2e)", () => {
         const address = Math.random().toString(11)
         const createdPublisher = await publishersService.create(org_name, address);
         //Then: load one publisher after create
-        let afterResponseFindone = await (request(app.getHttpServer())
+        await (request(app.getHttpServer())
             .post("/publisher/findone")
             .set("Authorization", "Bearer " + 123)
             .send({
@@ -103,7 +101,7 @@ describe("AppController (e2e)", () => {
         const address = Math.random().toString(11)
         const createdPublisher = await publishersService.create(org_name, address);
         //Then: load one publisher after create
-        let afterResponseFindone = await (request(app.getHttpServer())
+       await (request(app.getHttpServer())
             .post("/publisher/findone")
             .set("Authorization", "Bearer " + token)
             .send({
