@@ -5,11 +5,15 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { BookService } from "../book/book.service";
 import { AppModule } from "../app.module";
 
-describe("AppController (e2e)", () => {
+describe("BookController (e2e)", () => {
     let app: INestApplication;
     let token: string;
     let booksService: BookService;
-
+    async function createBook(){
+        const title = Math.random().toString(36).slice(2)
+        const isbn = Math.random().toString(11)
+        return await booksService.create(title, isbn);
+    }
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -27,6 +31,7 @@ describe("AppController (e2e)", () => {
             });
         token = body.access_token;
         booksService = moduleFixture.get<BookService>(BookService);
+
     });
 
     it("/books/findall(GET) - success", async () => {
@@ -38,9 +43,7 @@ describe("AppController (e2e)", () => {
         const prevCount = prevResponse.body.length;
 
         // When: create new book
-        const title = Math.random().toString(36).slice(2)
-        const isbn = Math.random().toString(11)
-        await booksService.create(title, isbn);
+        await createBook()
 
         // When: load all books after new has been created
         const afterResponse = await (request(app.getHttpServer())
@@ -51,29 +54,23 @@ describe("AppController (e2e)", () => {
         // Then: check count
         const afterCount = afterResponse.body.length;
         expect(afterCount).toEqual(prevCount + 1);
-
-        // Then: check that crated book present in response
-        // expect(createdBook).toEqual(afterResponse.body[afterResponse.body.length - 1]);
     });
 
     it("/books/findone (POST) - success", async () => {
         jest.setTimeout(10000);
         // When: create new book
-        const title = Math.random().toString(36).slice(2)
-        const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn);
+        const createdBook = await createBook()
 
         //Then: load one book after create
-        let afterResponseFindone = await (request(app.getHttpServer())
+        let FindoneResult = await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + token)
             .send({
                 "book_id": createdBook.book_id
             })
             .expect(201));
-        let afterCountFindone = afterResponseFindone.body;
-        // Then: check count
-        expect(afterCountFindone).toEqual(createdBook);
+        // Then: check book
+        expect(FindoneResult.body).toEqual(createdBook);
     });
 
     it("/books/findall(GET) - fail", async () => {
@@ -84,12 +81,10 @@ describe("AppController (e2e)", () => {
             .expect(401));
     });
 
-    it("/books/findone (POST) - fail", async () => {
+    it("/books/findone (POST) - fail1", async () => {
         jest.setTimeout(10000);
         // When: create new book
-        const title = Math.random().toString(36).slice(2)
-        const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn);
+        const createdBook = await createBook()
         //Then: load one book after create
         await (request(app.getHttpServer())
             .post("/books/findone")
@@ -100,12 +95,10 @@ describe("AppController (e2e)", () => {
             .expect(401));
     });
 
-    it("/books/findone (POST) - fail", async () => {
+    it("/books/findone (POST) - fail2", async () => {
         jest.setTimeout(10000);
         // When: create new book
-        const title = Math.random().toString(36).slice(2)
-        const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn);
+        const createdBook = await createBook()
         //Then: load one book after create
        await (request(app.getHttpServer())
             .post("/books/findone")
@@ -114,22 +107,21 @@ describe("AppController (e2e)", () => {
                 "book_id": createdBook.book_id
             })
             .expect(201));
-        let afterCountFindone = undefined
-        // Then: check count
-        expect(afterCountFindone).toBeUndefined();
+        let FindoneResult = undefined
+        // Then: check book
+        expect(FindoneResult).toBeUndefined();
     });
 
     it('/books/:id (DELETE) - success', async () => {
         jest.setTimeout(10000);
-        const title = Math.random().toString(36).slice(2)
-        const isbn = Math.random().toString(11)
-        const createdBook = await booksService.create(title, isbn)
-
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
         await (request(app.getHttpServer())
             .delete('/books/' + createdBook.book_id)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
-
+// When: check deleted book
        await (request(app.getHttpServer())
             .post("/books/findone")
             .set("Authorization", "Bearer " + token)
@@ -140,13 +132,11 @@ describe("AppController (e2e)", () => {
     });
 
     it('/books/:id (DELETE) - fail', () => {
+        // When: delete book
         request(app.getHttpServer())
             .delete('/books/' + new Types.ObjectId().toHexString())
             .set('Authorization', 'Bearer ' + token)
-            .expect(404, {
-                statusCode: 404,
-                message: "Книга не найдена"
-            });
+            .expect(404);
     });
 
 });
