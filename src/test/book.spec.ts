@@ -56,24 +56,21 @@ describe("BookController (e2e)", () => {
         expect(afterCount).toEqual(prevCount + 1);
     });
 
-    it("/books/findone (POST) - success", async () => {
+    it("/books/:id (GET) - success", async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
 
         //Then: load one book after create
         let FindoneResult = await (request(app.getHttpServer())
-            .post("/books/findone")
+            .get("/books/" + createdBook.bookId)
             .set("Authorization", "Bearer " + token)
-            .send({
-                "book_id": createdBook.book_id
-            })
-            .expect(201));
+            .expect(200));
         // Then: check book
         expect(FindoneResult.body).toEqual(createdBook);
     });
 
-    it("/books/findall(GET) - fail", async () => {
+    it("/books/findall(GET) - fail token", async () => {
         // Given: load all books
         await (request(app.getHttpServer())
             .get("/books/findall")
@@ -81,35 +78,15 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
-    it("/books/findone (POST) - fail1", async () => {
+    it("/books/:id (GET) - fail token", async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
         //Then: load one book after create
         await (request(app.getHttpServer())
-            .post("/books/findone")
+            .get("/books/" + createdBook.bookId)
             .set("Authorization", "Bearer " + 123)
-            .send({
-                "book_id": createdBook.book_id
-            })
             .expect(401));
-    });
-
-    it("/books/findone (POST) - fail2", async () => {
-        jest.setTimeout(10000);
-        // When: create new book
-        const createdBook = await createBook()
-        //Then: load one book after create
-       await (request(app.getHttpServer())
-            .post("/books/findone")
-            .set("Authorization", "Bearer " + token)
-            .send({
-                "book_id": createdBook.book_id
-            })
-            .expect(201));
-        let FindoneResult = undefined
-        // Then: check book
-        expect(FindoneResult).toBeUndefined();
     });
 
     it('/books/:id (DELETE) - success', async () => {
@@ -118,23 +95,20 @@ describe("BookController (e2e)", () => {
         const createdBook = await createBook()
 // When: delete created book
         await (request(app.getHttpServer())
-            .delete('/books/' + createdBook.book_id)
+            .delete('/books/' + createdBook.bookId)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
 // When: check deleted book
        await (request(app.getHttpServer())
-            .post("/books/findone")
+           .get("/books/" + createdBook.bookId)
             .set("Authorization", "Bearer " + token)
-            .send({
-                "book_id": createdBook.book_id
-            })
             .expect(404,  {
                 statusCode: 404,
                 message: "Книга не найдена"
             }));
     });
 
-    it('/books/:id (DELETE) - fail', () => {
+    it('/books/:id (DELETE) - unreal book', () => {
         // When: delete book
         request(app.getHttpServer())
             .delete('/books/' + new Types.ObjectId().toHexString())

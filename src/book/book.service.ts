@@ -15,7 +15,7 @@ export class BookService {
 	}
 
 	async findOne(id: number): Promise<Book> {
-		return this.booksRepository.findOneBy({ book_id: id });
+		return this.booksRepository.findOneBy({ bookId: id });
 	}
 
 	async remove(bookId: number): Promise<void> {

@@ -20,10 +20,11 @@ import { BookDto } from './dook.dto';
 @Controller('books')
 export class BookController {
 	constructor(private readonly bookService: BookService) { }
+
 	@UseGuards(JwtAuthGuard)
-	@Post('findone')
-	async findone(@Body() dto: BookDto): Promise<Book> {
-		const book = await this.bookService.findOne(dto.book_id);
+	@Get(':id')
+	async findone(@Param('id') dto: number): Promise<Book> {
+		const book = await this.bookService.findOne(dto);
 		if(!book){
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
 		}
@@ -42,7 +43,7 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Delete(':id')
-	async remove(@Param('id') dto: number, ) {
+	async remove(@Param('id') dto: number) {
 		if (this.bookService.findOne(dto)){
 			const book = await this.bookService.remove(dto);
 		}
