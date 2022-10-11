@@ -128,7 +128,10 @@ describe("BookController (e2e)", () => {
             .send({
                 "book_id": createdBook.book_id
             })
-            .expect(404));
+            .expect(404,  {
+                statusCode: 404,
+                message: "Книга не найдена"
+            }));
     });
 
     it('/books/:id (DELETE) - fail', () => {
