@@ -34,7 +34,7 @@ export class BookController {
 
 	}
 	@UseGuards(JwtAuthGuard)
-	@Get('findall')
+	@Get()
 	async findall(): Promise<Book[]> {
 		const book = await this.bookService.findAll();
 		return book

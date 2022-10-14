@@ -34,10 +34,10 @@ describe("BookController (e2e)", () => {
 
     });
 
-    it("/books/findall(GET) - success", async () => {
+    it("/books(GET) - success", async () => {
         // Given: load all books
         const prevResponse = await (request(app.getHttpServer())
-            .get("/books/findall")
+            .get("/books")
             .set("Authorization", "Bearer " + token)
             .expect(200));
         const prevCount = prevResponse.body.length;
@@ -47,7 +47,7 @@ describe("BookController (e2e)", () => {
 
         // When: load all books after new has been created
         const afterResponse = await (request(app.getHttpServer())
-            .get("/books/findall")
+            .get("/books")
             .set("Authorization", "Bearer " + token)
             .expect(200));
 
@@ -70,10 +70,10 @@ describe("BookController (e2e)", () => {
         expect(FindoneResult.body).toEqual(createdBook);
     });
 
-    it("/books/findall(GET) - fail token", async () => {
+    it("/books(GET) - fail token", async () => {
         // Given: load all books
         await (request(app.getHttpServer())
-            .get("/books/findall")
+            .get("/books")
             .set("Authorization", "Bearer " + 123)
             .expect(401));
     });
