@@ -89,23 +89,15 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
-    it('/books/:id (DELETE) - success', async () => {
+    it('/books/:id (PUT) - success', async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
 // When: delete created book
         await (request(app.getHttpServer())
-            .delete('/books/' + createdBook.bookId)
+            .put('/books/' + createdBook.bookId)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
-// When: check deleted book
-       await (request(app.getHttpServer())
-           .get("/books/" + createdBook.bookId)
-            .set("Authorization", "Bearer " + token)
-            .expect(404,  {
-                statusCode: 404,
-                message: "Книга не найдена"
-            }));
     });
 
     it('/books/:id (DELETE) - unreal book', () => {

@@ -25,4 +25,9 @@ export class BookService {
 	async create(title: string, isbn: string): Promise<Book> {
 		return this.booksRepository.save({ title: title, isbn: isbn });
 	}
+
+	async update(bookId: number): Promise<void>{
+		let a = await this.booksRepository.findOneBy({bookId});
+		await this.booksRepository.update(bookId, a)
+	}
 }

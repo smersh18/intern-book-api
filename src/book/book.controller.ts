@@ -7,7 +7,7 @@ import {
 	HttpException,
 	HttpStatus,
 	Param,
-	Post,
+	Post, Put,
 	UseGuards
 } from '@nestjs/common'
 import { post } from '@typegoose/typegoose';
@@ -57,5 +57,17 @@ export class BookController {
 	 async create(title: string, isbn: string): Promise<Book> {
 		const book = this.bookService.create(title, isbn);
 		return book
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@HttpCode(200)
+	@Put(':id')
+	async update(@Param('id') dto: number) {
+		if (this.bookService.findOne(dto)){
+			const book = await this.bookService.update(dto);
+		}
+		else{
+			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
+		}
 	}
 }
