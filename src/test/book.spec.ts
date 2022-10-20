@@ -89,15 +89,23 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
-    it('/books/:id (PUT) - success', async () => {
+    it('/books/:id (DELETE) - success', async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
 // When: delete created book
         await (request(app.getHttpServer())
-            .put('/books/' + createdBook.bookId)
+            .delete('/books/' + createdBook.bookId)
             .set('Authorization', 'Bearer ' + token)
             .expect(200));
+// When: check deleted book
+       await (request(app.getHttpServer())
+           .get("/books/" + createdBook.bookId)
+            .set("Authorization", "Bearer " + token)
+            .expect(404,  {
+                statusCode: 404,
+                message: "Книга не найдена"
+            }));
     });
 
     it('/books/:id (DELETE) - unreal book', () => {
@@ -108,6 +116,44 @@ describe("BookController (e2e)", () => {
             .expect(404);
     });
 
+    it('/books/:id (PUT) - success', async () => {
+        jest.setTimeout(10000);
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
+        await (request(app.getHttpServer())
+            .put('/books/' + createdBook.bookId)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                "title": "999",
+                "isbn": "999"
+            })
+            .expect(200));
+// When: check deleted book2`
+        await (request(app.getHttpServer())
+            .get("/books/" + createdBook.bookId)
+            .set("Authorization", "Bearer " + token)
+            .expect({
+                "bookId": createdBook.bookId,
+                "title": "999",
+                "isbn": "999"
+            }));
+    });
+
+    it('/books/:id (PUT) - fail', async () => {
+        jest.setTimeout(10000);
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
+        await (request(app.getHttpServer())
+            .put('/books/' + createdBook.bookId)
+            .set('Authorization', 'Bearer ' + 123)
+            .send({
+                "title": "999",
+                "isbn": "999"
+            })
+            .expect(401));
+    });
 });
 afterAll(() => {
     disconnect();

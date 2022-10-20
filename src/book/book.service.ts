@@ -26,8 +26,13 @@ export class BookService {
 		return this.booksRepository.save({ title: title, isbn: isbn });
 	}
 
-	async update(bookId: number): Promise<void>{
-		let a = await this.booksRepository.findOneBy({bookId});
-		await this.booksRepository.update(bookId, a)
+	async update(bookId: number, dto: any): Promise<void>{
+			let b = await this.booksRepository.update(bookId,dto)
+			console.log(b)
+	}
+
+	async findSomeone(limit: number): Promise<void>{
+		let b = await this.booksRepository.findAndCount(limit)
+		console.log(b)
 	}
 }

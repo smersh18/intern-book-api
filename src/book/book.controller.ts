@@ -7,7 +7,7 @@ import {
 	HttpException,
 	HttpStatus,
 	Param,
-	Post, Put,
+	Post, Put, Query,
 	UseGuards
 } from '@nestjs/common'
 import { post } from '@typegoose/typegoose';
@@ -15,6 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
 import { BookDto } from './dook.dto';
+import {PublisherDto} from "../publisher/publisher.dto";
 
 
 @Controller('books')
@@ -44,8 +45,8 @@ export class BookController {
 	@HttpCode(200)
 	@Delete(':id')
 	async remove(@Param('id') dto: number) {
-		if (this.bookService.findOne(dto)){
-			const book = await this.bookService.remove(dto);
+		if (await this.bookService.findOne(dto)){
+			await this.bookService.remove(dto);
 		}
 		else{
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
@@ -62,12 +63,19 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Put(':id')
-	async update(@Param('id') dto: number) {
-		if (this.bookService.findOne(dto)){
-			const book = await this.bookService.update(dto);
+	async update(@Param('id') dto: number, @Body() dto1: BookDto) {
+		if (await this.bookService.findOne(dto)){
+			await this.bookService.update(dto, dto1);
 		}
 		else{
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
 		}
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@HttpCode(200)
+	@Get(':id')
+	async findsomeone(@Query() pageOptionsDto: number) {
+			await this.bookService.findSomeone(pageOptionsDto);
 	}
 }
