@@ -161,11 +161,22 @@ describe("BookController (e2e)", () => {
         const offset = Math.random().toString(10)
         //Then: load one book after create
         let FindoneResult = await (request(app.getHttpServer())
-            .get("books?limit=" + limit + "&offset=" + offset)
+            .get("/books?limit=" + limit + "&offset=" + offset)
             .set("Authorization", "Bearer " + token)
             .expect(200));
         // Then: check book
         expect(FindoneResult.body.length == limit);
+    });
+
+    it("/books (GET) - fail", async () => {
+        jest.setTimeout(10000);
+        const limit = Math.random().toString(10)
+        const offset = Math.random().toString(10)
+        //Then: load one book after create
+        let FindoneResult = await (request(app.getHttpServer())
+            .get("/books?limit=" + limit + "&offset=" + offset)
+            .set("Authorization", "Bearer " + 13)
+            .expect(401));
     });
 
 });
