@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book } from './book.entity';
+import {PageDto} from "./dook.dto";
 
 @Injectable()
 export class BookService {
@@ -31,8 +32,7 @@ export class BookService {
 			console.log(b)
 	}
 
-	async findSomeone(limit: number): Promise<void>{
-		let b = await this.booksRepository.findAndCount(limit)
-		console.log(b)
+	async findSomeone(page: PageDto): Promise<Book[]>{
+		return await this.booksRepository.find({skip: page.offset, take: page.limit})
 	}
 }

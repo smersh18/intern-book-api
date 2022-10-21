@@ -14,8 +14,9 @@ import { post } from '@typegoose/typegoose';
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
-import { BookDto } from './dook.dto';
+import {BookDto, PageDto} from './dook.dto';
 import {PublisherDto} from "../publisher/publisher.dto";
+import {resolveAny} from "dns";
 
 
 @Controller('books')
@@ -34,12 +35,12 @@ export class BookController {
 		}
 
 	}
-	@UseGuards(JwtAuthGuard)
-	@Get()
-	async findall(): Promise<Book[]> {
-		const book = await this.bookService.findAll();
-		return book
-	}
+	// @UseGuards(JwtAuthGuard)
+	// @Get()
+	// async findall(): Promise<Book[]> {
+	// 	const book = await this.bookService.findAll();
+	// 	return book
+	// }
 
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
@@ -74,8 +75,8 @@ export class BookController {
 
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
-	@Get(':id')
-	async findsomeone(@Query() pageOptionsDto: number) {
-			await this.bookService.findSomeone(pageOptionsDto);
+	@Get()
+	async findsomeone(@Query() pageOptionsDto: PageDto) {
+			return await this.bookService.findSomeone(pageOptionsDto);
 	}
 }
