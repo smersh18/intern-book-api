@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {isNotEmpty, isString, MaxLength} from "class-validator";
+import {isNotEmpty, IsString, isString, MaxLength} from "class-validator";
 
 @Entity()
 export class Book {
@@ -8,11 +8,11 @@ export class Book {
 
 	bookId?: number;
 	@MaxLength(30)
-	@isString()
+	@IsString()
 	@Column()
 	title: string;
 	@MaxLength(30)
-	@isString()
+	@IsString()
 	@Column()
 	isbn: string;
 

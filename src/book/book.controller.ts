@@ -57,13 +57,13 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@Post()
 	 async create(title: string, isbn: string): Promise<Book> {
-		if (title.length > 30 || isbn.length > 11 || typeof title == "number" || typeof isbn == "number"){
-			throw new HttpException("неверные данные создания", HttpStatus.BAD_REQUEST)
-	}
-		else {
+	// 	if (title.length > 30 || isbn.length > 11 || typeof title == "number" || typeof isbn == "number"){
+	// 		throw new HttpException("неверные данные создания", HttpStatus.BAD_REQUEST)
+	// }
+	// 	else {
 			const book = this.bookService.create(title, isbn);
 			return book
-		}
+		// }
 
 	}
 
