@@ -14,7 +14,7 @@ import { post } from '@typegoose/typegoose';
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
-import {BookDto, PageDto} from './dook.dto';
+import {BookDto, PageDto, ValidDto} from './dook.dto';
 import {PublisherDto} from "../publisher/publisher.dto";
 import {resolveAny} from "dns";
 
@@ -56,7 +56,7 @@ export class BookController {
 
 	@UseGuards(JwtAuthGuard)
 	@Post()
-	 async create(@Body()title: any): Promise<Book> {
+	 async create(@Body()title: ValidDto): Promise<Book> {
 	// 	if (title.length > 30 || isbn.length > 11 || typeof title == "number" || typeof isbn == "number"){
 	// 		throw new HttpException("неверные данные создания", HttpStatus.BAD_REQUEST)
 	// }
