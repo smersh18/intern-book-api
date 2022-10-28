@@ -179,6 +179,17 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
+    it("/books(POST) - fail", async () => {
+        await (request(app.getHttpServer())
+            .post("/books")
+            .set("Authorization", "Bearer " + token)
+            .send({
+                "title": "999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                "isbn": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+            })
+            .expect(400));
+    });
+
 });
 afterAll(() => {
     disconnect();
