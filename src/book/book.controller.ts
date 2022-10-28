@@ -70,7 +70,7 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Put(':id')
-	async update(@Param('id') dto: number, @Body() dto1: BookDto) {
+	async update(@Param('id') dto: number, @Body() dto1: ValidDto) {
 		if (await this.bookService.findOne(dto)){
 			await this.bookService.update(dto, dto1);
 		}

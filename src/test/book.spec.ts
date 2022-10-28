@@ -155,6 +155,21 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
+    it('/books/:id (PUT) - fail', async () => {
+        jest.setTimeout(10000);
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
+        await (request(app.getHttpServer())
+            .put('/books/' + createdBook.bookId)
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                "title": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                "isbn": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+            })
+            .expect(400));
+    });
+
     it("/books (GET) - success", async () => {
         jest.setTimeout(10000);
         const limit = Math.random().toString(10)
@@ -175,7 +190,7 @@ describe("BookController (e2e)", () => {
         //Then: load one book after create
         let FindoneResult = await (request(app.getHttpServer())
             .get("/books?limit=" + limit + "&offset=" + offset)
-            .set("Authorization", "Bearer " + 13)
+            .set("Authorization", "Bearer " + 123)
             .expect(401));
     });
 
