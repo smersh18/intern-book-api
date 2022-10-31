@@ -1,4 +1,4 @@
-import { INestApplication } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import * as request from "supertest";
 import {disconnect, Types} from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
@@ -15,12 +15,13 @@ describe("BookController (e2e)", () => {
         return await booksService.create(title, isbn);
     }
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule]
         }).compile();
 
         app = moduleFixture.createNestApplication();
+      app.useGlobalPipes(new ValidationPipe())
         await app.init();
 
         const { body } = await request(app.getHttpServer())
@@ -169,6 +170,7 @@ describe("BookController (e2e)", () => {
             })
             .expect(400));
     });
+
     it('/books (POST) - fail title number', async () => {
         jest.setTimeout(10000);
         // When: create new book
