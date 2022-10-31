@@ -8,6 +8,7 @@ export class BookDto {
 
 export class PageDto{
 	limit?: number;
+
 	offset?: number;
 }
 

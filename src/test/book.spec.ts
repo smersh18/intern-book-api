@@ -116,7 +116,7 @@ describe("BookController (e2e)", () => {
             .expect(404);
     });
 
-    it('/books/:id (PUT) - success', async () => {
+    it('/books/:id (POST) - success', async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
@@ -140,13 +140,13 @@ describe("BookController (e2e)", () => {
             }));
     });
 
-    it('/books/:id (PUT) - fail', async () => {
+    it('/books (POST) - fail', async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
 // When: delete created book
         await (request(app.getHttpServer())
-            .put('/books/' + createdBook.bookId)
+            .post('/books')
             .set('Authorization', 'Bearer ' + 123)
             .send({
                 "title": "999",
@@ -155,17 +155,45 @@ describe("BookController (e2e)", () => {
             .expect(401));
     });
 
-    it('/books/:id (PUT) - fail', async () => {
+    it('/books (POST) - fail all null', async () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
 // When: delete created book
         await (request(app.getHttpServer())
-            .put('/books/' + createdBook.bookId)
+            .post('/books')
             .set('Authorization', 'Bearer ' + token)
             .send({
-                "title": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+                "title": null,
+                "isbn": null
+            })
+            .expect(400));
+    });
+    it('/books (POST) - fail title number', async () => {
+        jest.setTimeout(10000);
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
+        await (request(app.getHttpServer())
+            .post('/books')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                "title": 999,
                 "isbn": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+            })
+            .expect(400));
+    });
+    it('/books (POST) - fail isbn number', async () => {
+        jest.setTimeout(10000);
+        // When: create new book
+        const createdBook = await createBook()
+// When: delete created book
+        await (request(app.getHttpServer())
+            .post('/books')
+            .set('Authorization', 'Bearer ' + token)
+            .send({
+                "title": "99999",
+                "isbn": 999
             })
             .expect(400));
     });
