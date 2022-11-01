@@ -25,8 +25,8 @@ export class BookController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
-	async findone(@Param('id') dto: number): Promise<Book> {
-		const book = await this.bookService.findOne(dto);
+	async findone(@Param('id') bookId: number): Promise<Book> {
+		const book = await this.bookService.findOne(bookId);
 		if(!book){
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
 		}
@@ -45,9 +45,9 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Delete(':id')
-	async remove(@Param('id') dto: number) {
-		if (await this.bookService.findOne(dto)){
-			await this.bookService.remove(dto);
+	async remove(@Param('id') bookId: number) {
+		if (await this.bookService.findOne(bookId)){
+			await this.bookService.remove(bookId);
 		}
 		else{
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
@@ -70,9 +70,9 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Put(':id')
-	async update(@Param('id') dto: number, @Body() dto1: ValidDto) {
-		if (await this.bookService.findOne(dto)){
-			await this.bookService.update(dto, dto1);
+	async update(@Param('id') bookId: number, @Body() validation: ValidDto) {
+		if (await this.bookService.findOne(bookId)){
+			await this.bookService.update(bookId, validation);
 		}
 		else{
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)

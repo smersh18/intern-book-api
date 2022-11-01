@@ -27,8 +27,8 @@ export class BookService {
 		return this.booksRepository.save({ title: title, isbn: isbn });
 	}
 
-	async update(bookId: number, dto: any): Promise<void>{
-			let b = await this.booksRepository.update(bookId,dto)
+	async update(bookId: number, body: any): Promise<void>{
+			let b = await this.booksRepository.update(bookId,body)
 			console.log(b)
 	}
 
