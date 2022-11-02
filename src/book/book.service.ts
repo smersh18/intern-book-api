@@ -11,10 +11,6 @@ export class BookService {
 		private booksRepository: Repository<Book>,
 	) { }
 
-	findAll(): Promise<Book[]> {
-		return this.booksRepository.find();
-	}
-
 	async findOne(id: number): Promise<Book> {
 		return this.booksRepository.findOneBy({ bookId: id });
 	}

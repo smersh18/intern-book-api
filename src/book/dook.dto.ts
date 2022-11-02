@@ -1,10 +1,5 @@
-import {IsNumber, IsString, MaxLength} from 'class-validator';
-import {Column} from "typeorm";
+import { IsString, MaxLength} from 'class-validator';
 
-export class BookDto {
-	@IsNumber()
-	bookId: number;
-}
 
 export class PageDto{
 	limit?: number;

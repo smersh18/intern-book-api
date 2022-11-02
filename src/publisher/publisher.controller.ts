@@ -3,7 +3,6 @@ import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { PublisherDto } from './publisher.dto';
 import { Publisher } from './publisher.entity';
 import { PublisherService } from './publisher.service';
-import {BookDto} from "../book/dook.dto";
 
 
 @Controller('publisher')

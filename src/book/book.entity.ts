@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {isNotEmpty, IsString, isString, MaxLength} from "class-validator";
+import { IsString, MaxLength} from "class-validator";
 
 @Entity()
 export class Book {

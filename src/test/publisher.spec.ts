@@ -1,10 +1,9 @@
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
-import { Types, disconnect } from "mongoose";
+import { disconnect } from "mongoose";
 import { Test, TestingModule } from "@nestjs/testing";
 import {AppModule} from "../app.module";
 import {PublisherService} from "../publisher/publisher.service";
-import {BookService} from "../book/book.service";
 
 describe("AppController (e2e)", () => {
     let app: INestApplication;

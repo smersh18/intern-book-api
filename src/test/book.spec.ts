@@ -121,7 +121,7 @@ describe("BookController (e2e)", () => {
         jest.setTimeout(10000);
         // When: create new book
         const createdBook = await createBook()
-// When: delete created book
+// When: update created book
         await (request(app.getHttpServer())
             .put('/books/' + createdBook.bookId)
             .set('Authorization', 'Bearer ' + token)
@@ -130,7 +130,7 @@ describe("BookController (e2e)", () => {
                 "isbn": "999"
             })
             .expect(200));
-// When: check deleted book2`
+// When: check updated book`
         await (request(app.getHttpServer())
             .get("/books/" + createdBook.bookId)
             .set("Authorization", "Bearer " + token)
@@ -143,9 +143,7 @@ describe("BookController (e2e)", () => {
 
     it('/books (POST) - fail', async () => {
         jest.setTimeout(10000);
-        // When: create new book
-        const createdBook = await createBook()
-// When: delete created book
+// When: create book
         await (request(app.getHttpServer())
             .post('/books')
             .set('Authorization', 'Bearer ' + 123)
@@ -158,9 +156,7 @@ describe("BookController (e2e)", () => {
 
     it('/books (POST) - fail all null', async () => {
         jest.setTimeout(10000);
-        // When: create new book
-        const createdBook = await createBook()
-// When: delete created book
+        // When: create book
         await (request(app.getHttpServer())
             .post('/books')
             .set('Authorization', 'Bearer ' + token)
@@ -173,9 +169,7 @@ describe("BookController (e2e)", () => {
 
     it('/books (POST) - fail title number', async () => {
         jest.setTimeout(10000);
-        // When: create new book
-        const createdBook = await createBook()
-// When: delete created book
+        // When: create book
         await (request(app.getHttpServer())
             .post('/books')
             .set('Authorization', 'Bearer ' + token)
@@ -187,9 +181,7 @@ describe("BookController (e2e)", () => {
     });
     it('/books (POST) - fail isbn number', async () => {
         jest.setTimeout(10000);
-        // When: create new book
-        const createdBook = await createBook()
-// When: delete created book
+        // When: create book
         await (request(app.getHttpServer())
             .post('/books')
             .set('Authorization', 'Bearer ' + token)
@@ -204,12 +196,12 @@ describe("BookController (e2e)", () => {
         jest.setTimeout(10000);
         const limit = Math.random().toString(10)
         const offset = Math.random().toString(10)
-        //Then: load one book after create
+        //Then: load page from book after create
         let FindoneResult = await (request(app.getHttpServer())
             .get("/books?limit=" + limit + "&offset=" + offset)
             .set("Authorization", "Bearer " + token)
             .expect(200));
-        // Then: check book
+        // Then: check page
         expect(FindoneResult.body.length == limit);
     });
 
@@ -217,8 +209,8 @@ describe("BookController (e2e)", () => {
         jest.setTimeout(10000);
         const limit = Math.random().toString(10)
         const offset = Math.random().toString(10)
-        //Then: load one book after create
-        let FindoneResult = await (request(app.getHttpServer())
+        //Then: load page from book after create
+        await (request(app.getHttpServer())
             .get("/books?limit=" + limit + "&offset=" + offset)
             .set("Authorization", "Bearer " + 123)
             .expect(401));

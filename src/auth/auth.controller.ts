@@ -1,13 +1,10 @@
-import { BadRequestException, Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { ALREADY_REGISTERED_ERROR } from './auth.constants';
+import { Body, Controller, HttpCode, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
-	constructor(private readonly authService: AuthService,
-		private readonly configService: ConfigService) { }
+	constructor(private readonly authService: AuthService) { }
 
 
 	@UsePipes(new ValidationPipe())
