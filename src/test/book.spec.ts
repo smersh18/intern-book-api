@@ -63,12 +63,12 @@ describe("BookController (e2e)", () => {
         const createdBook = await createBook()
 
         //Then: load one book after create
-        let FindoneResult = await (request(app.getHttpServer())
+        let FindOneResult = await (request(app.getHttpServer())
             .get("/books/" + createdBook.bookId)
             .set("Authorization", "Bearer " + token)
             .expect(200));
         // Then: check book
-        expect(FindoneResult.body).toEqual(createdBook);
+        expect(FindOneResult.body).toEqual(createdBook);
     });
 
     it("/books(GET) - fail token", async () => {
@@ -197,12 +197,12 @@ describe("BookController (e2e)", () => {
         const limit = Math.random().toString(10)
         const offset = Math.random().toString(10)
         //Then: load page from book after create
-        let FindoneResult = await (request(app.getHttpServer())
+        let FindOneResult = await (request(app.getHttpServer())
             .get("/books?limit=" + limit + "&offset=" + offset)
             .set("Authorization", "Bearer " + token)
             .expect(200));
         // Then: check page
-        expect(FindoneResult.body.length == limit);
+        expect(FindOneResult.body.length == limit);
     });
 
     it("/books (GET) - fail", async () => {

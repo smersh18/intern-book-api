@@ -9,20 +9,20 @@ import { PublisherService } from './publisher.service';
 export class PublisherController {
 	constructor(private readonly publisherService: PublisherService) { }
 	@UseGuards(JwtAuthGuard)
-	@Post('findone')
-	async findone(@Body() dto: PublisherDto): Promise<Publisher> {
-		const publisher = await this.publisherService.findOne(dto.publisherId);
-		return publisher
+	@Post('findOne')
+	async findOne(@Body() dto: PublisherDto): Promise<Publisher> {
+		return await this.publisherService.findOne(dto.publisherId);
+
 	}
 	@UseGuards(JwtAuthGuard)
-	@Get('findall')
-	async findall(): Promise<Publisher[]> {
-		const publisher = await this.publisherService.findAll();
-		return publisher
+	@Get('findAll')
+	async findAll(): Promise<Publisher[]> {
+		return await this.publisherService.findAll();
+
 	}
 	@Delete('remove')
 	async remove(@Body() dto: PublisherDto): Promise<void> {
-		const book = await this.publisherService.remove(dto.publisherId);
-		return book
+		return await this.publisherService.remove(dto.publisherId);
+
 	}
 }

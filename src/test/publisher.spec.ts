@@ -28,10 +28,10 @@ describe("AppController (e2e)", () => {
         publishersService = moduleFixture.get<PublisherService>(PublisherService);
     });
 
-    it("/publisher/findall(GET) - success", async () => {
+    it("/publisher/findAll(GET) - success", async () => {
         // load all publishers
         let prevResponse = await (request(app.getHttpServer())
-            .get("/publisher/findall")
+            .get("/publisher/findAll")
             .set("Authorization", "Bearer " + token)
             .expect(200));
         let prevCount = prevResponse.body.length;
@@ -41,7 +41,7 @@ describe("AppController (e2e)", () => {
      await publishersService.create(org_name, address);
         // load all publishers after new has been created
         let afterResponse = await (request(app.getHttpServer())
-            .get("/publisher/findall")
+            .get("/publisher/findAll")
             .set("Authorization", "Bearer " + token)
             .expect(200));
         let afterCount = afterResponse.body.length;
@@ -50,34 +50,34 @@ describe("AppController (e2e)", () => {
 
     });
 
-    it("/publisher/findone (POST) - success", async () => {
+    it("/publisher/findOne (POST) - success", async () => {
         jest.setTimeout(10000);
         // When: create new publisher
         const org_name = Math.random().toString(36).slice(2)
         const address = Math.random().toString(11)
         const createdPublisher = await publishersService.create(org_name, address);
         //Then: load one publisher after create
-        let afterResponseFindone = await (request(app.getHttpServer())
-            .post("/publisher/findone")
+        let afterResponseFindOne = await (request(app.getHttpServer())
+            .post("/publisher/findOne")
             .set("Authorization", "Bearer " + token)
             .send({
                 "book_id": createdPublisher.publisher_id
             })
             .expect(201));
-        let afterCountFindone = afterResponseFindone.body;
+        let afterCountFindOne = afterResponseFindOne.body;
         // Then: check count
-        expect(afterCountFindone).toBeDefined();
+        expect(afterCountFindOne).toBeDefined();
     });
 
-    it("/publisher/findall(GET) - fail", async () => {
+    it("/publisher/findAll(GET) - fail", async () => {
         // load all publishers
         await (request(app.getHttpServer())
-            .get("/publisher/findall")
+            .get("/publisher/findAll")
             .set("Authorization", "Bearer " + 123)
             .expect(401));
     });
 
-    it("/publisher/findone (POST) - fail", async () => {
+    it("/publisher/findOne (POST) - fail", async () => {
         jest.setTimeout(10000);
         // When: create new publisher
         const org_name = Math.random().toString(36).slice(2)
@@ -85,7 +85,7 @@ describe("AppController (e2e)", () => {
         const createdPublisher = await publishersService.create(org_name, address);
         //Then: load one publisher after create
         await (request(app.getHttpServer())
-            .post("/publisher/findone")
+            .post("/publisher/findOne")
             .set("Authorization", "Bearer " + 123)
             .send({
                 "book_id": createdPublisher.publisher_id
@@ -93,7 +93,7 @@ describe("AppController (e2e)", () => {
             .expect(401));
     });
 
-    it("/publisher/findone (POST) - fail", async () => {
+    it("/publisher/findOne (POST) - fail", async () => {
         jest.setTimeout(10000);
         // When: create new publisher
         const org_name = Math.random().toString(36).slice(2)
@@ -101,15 +101,15 @@ describe("AppController (e2e)", () => {
         const createdPublisher = await publishersService.create(org_name, address);
         //Then: load one publisher after create
        await (request(app.getHttpServer())
-            .post("/publisher/findone")
+            .post("/publisher/findOne")
             .set("Authorization", "Bearer " + token)
             .send({
                 "book_id": createdPublisher.publisher_id
             })
             .expect(201));
-        let afterCountFindone = undefined
+        let afterCountFindOne = undefined
         // Then: check count
-        expect(afterCountFindone).toBeUndefined();
+        expect(afterCountFindOne).toBeUndefined();
     });
 
 });

@@ -23,7 +23,7 @@ export class BookController {
 
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
-	async findone(@Param('id') bookId: number): Promise<Book> {
+	async findOne(@Param('id') bookId: number): Promise<Book> {
 		const book = await this.bookService.findOne(bookId);
 		if(!book){
 			throw new HttpException("Книга не найдена", HttpStatus.NOT_FOUND)
@@ -67,7 +67,7 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Get()
-	async findsomeone(@Query() pageOptionsDto: PageDto) {
+	async findSomeOne(@Query() pageOptionsDto: PageDto) {
 			return await this.bookService.findSomeone(pageOptionsDto);
 	}
 }
