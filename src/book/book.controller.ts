@@ -13,13 +13,14 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
-import {PageDto, ValidDto} from './dook.dto';
-
+import {PageDto, ValidDto} from './book.dto';
+import {PublisherService} from "../publisher/publisher.service";
+import { Connection } from "typeorm";
 
 
 @Controller('books')
 export class BookController {
-	constructor(private readonly bookService: BookService) { }
+	constructor(private readonly bookService: BookService, publisherService: PublisherService,  private connection: Connection) { }
 
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
@@ -66,8 +67,9 @@ export class BookController {
 
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
-	@Get()
-	async findSomeOne(@Query() pageOptionsDto: PageDto) {
-			return await this.bookService.findSomeone(pageOptionsDto);
+	@Post('createMultipleBooks')
+	async createMultipleBooks(@Body()title: ValidDto, @Body()org_name: string, @Body()address: string) {
+		return  this.bookService.createMultipleBooks(title.title, title.isbn, org_name, address)
 	}
+
 }
