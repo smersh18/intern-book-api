@@ -13,14 +13,14 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt.guards';
 import { Book } from './book.entity';
 import { BookService } from './book.service'
-import {PageDto, ValidDto} from './book.dto';
+import {PageDto, ValidDto, ValidDto2} from './book.dto';
 import {PublisherService} from "../publisher/publisher.service";
 import { Connection } from "typeorm";
 
 
 @Controller('books')
 export class BookController {
-	constructor(private readonly bookService: BookService, publisherService: PublisherService,  private connection: Connection) { }
+	constructor(private readonly bookService: BookService,  private connection: Connection) { }
 
 	@UseGuards(JwtAuthGuard)
 	@Get(':id')
@@ -68,8 +68,21 @@ export class BookController {
 	@UseGuards(JwtAuthGuard)
 	@HttpCode(200)
 	@Post('createMultipleBooks')
-	async createMultipleBooks(@Body()title: ValidDto, @Body()org_name: string, @Body()address: string) {
-		return  this.bookService.createMultipleBooks(title.title, title.isbn, org_name, address)
+	async createMultipleBooks(@Body()title: ValidDto, @Body()org_name: ValidDto2) {
+		return  this.bookService.createMultipleBooks(title.title, title.isbn, org_name.org_name, org_name.address)
 	}
 
+	// @UseGuards(JwtAuthGuard)
+	// @HttpCode(200)
+	// @Get()
+	// async findSomeOne(@Query() pageOptionsDto: PageDto) {
+	// 	return await this.bookService.findSomeone(pageOptionsDto);
+	// }
+
+@UseGuards(JwtAuthGuard)
+	@Get()
+	async findall(): Promise<Book[]> {
+		const book = await this.bookService.findAll();
+		return book
+	}
 }

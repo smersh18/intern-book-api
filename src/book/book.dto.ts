@@ -16,3 +16,13 @@ export class ValidDto {
 	isbn: string;
 
 }
+
+export class ValidDto2 {
+	@MaxLength(30)
+	@IsString()
+	org_name: string;
+	@MaxLength(30)
+	@IsString()
+	address: string;
+
+}

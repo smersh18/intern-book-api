@@ -10,7 +10,7 @@ export class BookService {
 	constructor(
 		@InjectRepository(Book)
 		private booksRepository: Repository<Book>,
-		private publishersRepository: Repository<Publisher>,
+		// private publishersRepository: Repository<Publisher>,
 		private connection: Connection
 	) { }
 
@@ -42,6 +42,8 @@ export class BookService {
 		await queryRunner.startTransaction();
 
 		try {
+			// await queryRunner.manager.save({ title: title, isbn: isbn });
+			// await queryRunner.manager.save({ org_name: org_name, address: address });
 			await queryRunner.manager.save({ title: title, isbn: isbn });
 			await queryRunner.manager.save({ org_name: org_name, address: address });
 
@@ -51,5 +53,8 @@ export class BookService {
 		}finally {
 			await queryRunner.release();
 		}
+	}
+	findAll(): Promise<Book[]> {
+		return this.booksRepository.find();
 	}
 }
