@@ -15,7 +15,7 @@ export class PublisherController {
 
 	}
 	@UseGuards(JwtAuthGuard)
-	@Get('findAll')
+	@Get()
 	async findAll(): Promise<Publisher[]> {
 		return await this.publisherService.findAll();
 

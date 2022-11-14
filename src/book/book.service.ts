@@ -4,6 +4,8 @@ import {Connection, Repository} from 'typeorm';
 import { Book } from './book.entity';
 import {PageDto, ValidDto} from "./book.dto";
 import {Publisher} from "../publisher/publisher.entity";
+import {ModelType} from "@typegoose/typegoose/lib/types";
+import {BookModule} from "./book.module";
 
 @Injectable()
 export class BookService {
@@ -42,10 +44,8 @@ export class BookService {
 		await queryRunner.startTransaction();
 
 		try {
-			// await queryRunner.manager.save({ title: title, isbn: isbn });
-			// await queryRunner.manager.save({ org_name: org_name, address: address });
-			await queryRunner.manager.save({ title: title, isbn: isbn });
-			await queryRunner.manager.save({ org_name: org_name, address: address });
+			await queryRunner.manager.save(new Book(title, isbn ));
+			await queryRunner.manager.save(new Publisher( org_name, address ));
 
 			await queryRunner.commitTransaction();
 		}catch (err) {
